@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relay 实时验证 · 鹈鹕骑车测试</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; background: #f6f7f9; color: #1a1a1a; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  .sub { color: #666; font-size: 14px; line-height: 1.7; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-top: 20px; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .ok { background: #dcfce7; color: #166534; }
+  .err { background: #fee2e2; color: #991b1b; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+  th { color: #666; font-weight: 600; }
+  .resp { white-space: pre-wrap; line-height: 1.7; color: #333; }
+  .mono { font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+  .muted { color: #888; font-size: 13px; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 6px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Relay 实时验证</h1>
+  <p class="sub">本站每 5 小时自动调用一次中转站，测试提示词固定为 <code>鹈鹕骑车</code>（请模型描写一只鹈鹕骑自行车），并公开每一次的返回内容、耗时与 token 用量。返回是真 Claude 的现场写作，无法靠便宜模型冒充，以此证明本站没有掺水。测试不调用官方 API 做对比，只测本站自身。</p>
+  <p class="sub">中转站：<code>relay.haocoach.com</code> · 测试提示词：<code>鹈鹕骑车</code> · 间隔：每 5 小时</p>
+  <div id="latest" class="card">加载中…</div>
+  <div class="card">
+    <h2 style="font-size:18px;margin:0 0 12px">历史记录</h2>
+    <div id="history">加载中…</div>
+  </div>
+  <p class="muted">数据来源：本站定时任务实测结果（results.json），页面每次打开时读取最新数据。</p>
+</div>
+<script>
+async function load() {
+  let rows = [];
+  try {
+    const r = await fetch('results.json', { cache: 'no-store' });
+    rows = await r.json();
+  } catch (e) {
+    document.getElementById('latest').textContent = '加载失败：' + e;
+    document.getElementById('history').textContent = '';
+    return;
+  }
+  rows = rows.slice().reverse();
+  const latest = rows[0];
+  if (latest) {
+    const badge = latest.status === 'ok' ? '<span class="badge ok">正常</span>' : '<span class="badge err">异常</span>';
+    document.getElementById('latest').innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">' +
+      '<strong>最近一次测试</strong>' + badge + '</div>' +
+      '<p class="muted">' + esc(latest.time) + ' · 模型 <span class="mono">' + esc(latest.model) + '</span>' +
+      (latest.latency_s != null ? ' · 耗时 ' + latest.latency_s + ' 秒' : '') +
+      (latest.input_tokens != null ? ' · 输入 ' + latest.input_tokens + ' token / 输出 ' + latest.output_tokens + ' token' : '') + '</p>' +
+      '<div class="resp">' + esc(latest.response || '') + '</div>';
+  }
+  let html = '<table><thead><tr><th>时间</th><th>模型</th><th>状态</th><th>耗时</th><th>Token</th></tr></thead><tbody>';
+  for (const r of rows) {
+    html += '<tr><td>' + esc(r.time) + '</td><td class="mono">' + esc(r.model) + '</td><td>' +
+      (r.status === 'ok' ? '<span class="badge ok">正常</span>' : '<span class="badge err">异常</span>') + '</td><td>' +
+      (r.latency_s != null ? r.latency_s + 's' : '-') + '</td><td>' +
+      (r.input_tokens != null ? r.input_tokens + ' / ' + r.output_tokens : '-') + '</td></tr>';
+    html += '<tr><td colspan="5"><div class="resp">' + esc(r.response || '') + '</div></td></tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('history').innerHTML = html;
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+load();
+</script>
+</body>
+</html>
