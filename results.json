@@ -61,5 +61,14 @@
     "input_tokens": null,
     "output_tokens": null,
     "response": "RemoteDisconnected: Remote end closed connection without response"
+  },
+  {
+    "time": "2026-11-21 18:22 UTC",
+    "model": "claude-sonnet-4-6",
+    "status": "error",
+    "latency_s": null,
+    "input_tokens": null,
+    "output_tokens": null,
+    "response": "RemoteDisconnected: Remote end closed connection without response"
   }
 ]
