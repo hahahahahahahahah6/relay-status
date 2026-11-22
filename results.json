@@ -79,5 +79,14 @@
     "input_tokens": 57,
     "output_tokens": 266,
     "response": "只见那只鹈鹕昂首挺胸地坐在自行车上，宽大的橙色喙袋随着颠簸一晃一晃，活像挂在车头的一只气球。它蹬着踏板的姿势笨拙而执着，两条细长的腿飞快地转动，白色羽毛在风中哗哗作响。自行车歪歪扭扭地穿过林荫小道，压过落叶发出沙沙声响，引得公园里的鸽子四散惊飞，长椅上的老人目瞪口呆，连松鼠都从树上探出头来，睁大眼睛打量这位荒唐的骑手。鹈鹕却浑然不觉，仰着脑袋，神情傲然，仿佛这条小路本就是为它一人铺就的。"
+  },
+  {
+    "time": "2026-11-22 04:22 UTC",
+    "model": "claude-sonnet-4-6",
+    "status": "error",
+    "latency_s": 0.62,
+    "input_tokens": null,
+    "output_tokens": null,
+    "response": "HTTP 429: {\"code\":\"API_KEY_QUOTA_EXHAUSTED\",\"message\":\"API key 额度已用完\"}"
   }
 ]
