@@ -97,5 +97,14 @@
     "input_tokens": null,
     "output_tokens": null,
     "response": "HTTP 429: {\"code\":\"API_KEY_QUOTA_EXHAUSTED\",\"message\":\"API key 额度已用完\"}"
+  },
+  {
+    "time": "2026-11-22 14:22 UTC",
+    "model": "claude-sonnet-4-6",
+    "status": "error",
+    "latency_s": 1.18,
+    "input_tokens": null,
+    "output_tokens": null,
+    "response": "HTTP 429: {\"code\":\"API_KEY_QUOTA_EXHAUSTED\",\"message\":\"API key 额度已用完\"}"
   }
 ]
